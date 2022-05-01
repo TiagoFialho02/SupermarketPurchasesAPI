@@ -28,7 +28,7 @@ service / on new http:Listener(9090) {
     # + return - string name with hello message or error
     resource function get SupermarketPurchases/getProducts(string product) returns json|error {
         // Send a response back to the caller.
-        
+       
        return "to cá";
     }
 
