@@ -1,4 +1,6 @@
 import ballerina/http;
+import ballerina/mime;
+
 # A service representing a network-accessible API
 # bound to port `9090`.
 
@@ -23,13 +25,13 @@ service / on new http:Listener(9090) {
         return products;
     }
 
-
+    # search product by name in MongoDb
     # + product - the input string product
     # + return - string name with hello message or error
-    resource function get SupermarketPurchases/getProducts(string product) returns json|error {
+    resource function get SupermarketPurchases/getProductsByName(string product) returns json|error {
         // Send a response back to the caller.
-       
-       return "to cá";
+        
+        return "";
     }
 
 }
