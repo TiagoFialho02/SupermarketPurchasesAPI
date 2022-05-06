@@ -59,7 +59,7 @@ service / on new http:Listener(9090) {
             port: port,
             username: username,
             password: password,
-            options: {sslEnabled: false, serverSelectionTimeout: 10000, url: "mongodb+srv://SuperMarketPurchasesAdmin:1z2x3c4v5b@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority"}
+            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: "mongodb+srv://SuperMarketPurchasesAdmin:1z2x3c4v5b@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority"}
         };
 
         mongodb:Client mongoClient = check new (mongoConfig, database);
