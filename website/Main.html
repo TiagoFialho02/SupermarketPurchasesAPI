@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SupermarketPurchases - Main</title>
+  <script src="scripts/main.js"></script>
+  <script src="quagga.min.js"></script>
+</head>
+
+<body>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <input class="form-control mr-sm-2" type="search" id="APIProductNameInput" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" id="searchButton" onClick="getProductsFromAPI()">Search</button>
+    <input class="form-control mr-sm-2" type="search" id="productNameInput" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" id="searchButton" onClick="getProducts()">Search</button>
+  </div>
+  <div id="res"></div>
+
+  <div id="camera"></div>
+  <div id="resultadoCamera"></div>
+  <script>
+
+    Quagga.init({
+      inputStream: {
+        name: "Live",
+        type: "LiveStream",
+        target: document.querySelector('#camera')
+      },
+      decoder: {
+        readers: ["code_128_reader"]
+      }
+    }, function (err) {
+      if (err) {
+        console.log(err);
+        return
+      }
+      console.log("Initialization finished. Ready to start");
+      Quagga.start();
+    });
+
+
+    Quagga.onDetected(function (data){
+      console.log(data)
+      document.getElementById('resultadoCamera').innerHTML = data.codeResult.code;
+    });
+
+  </script>
+
+</body>
+
+</html>

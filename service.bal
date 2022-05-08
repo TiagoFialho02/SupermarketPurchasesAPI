@@ -27,7 +27,6 @@ configurable string username = "SuperMarketPurchasesAdmin";
 configurable string password = "1z2x3c4v5b";
 configurable string database = "SuperMarketPurchases";
 configurable string collection = "Products";
-
 service / on new http:Listener(9090) {
     # search product by name in brocade API
     # + productName - the input string product
@@ -51,8 +50,8 @@ service / on new http:Listener(9090) {
 
     # search product by name in MongoDb
     # + product - the input string product
-    # + return - string name with hello message or error
-    resource function get SupermarketPurchases/getProductsByName(string product) returns json|error {
+    # + return - json name with hello message or error
+     resource function get SupermarketPurchases/getProductsByName(string product) returns json|error {
         // Send a response back to the caller.
         mongodb:ConnectionConfig mongoConfig = {
             host: host,
@@ -61,19 +60,30 @@ service / on new http:Listener(9090) {
             password: password,
             options: {sslEnabled: false, serverSelectionTimeout: 20000, url: "mongodb+srv://SuperMarketPurchasesAdmin:1z2x3c4v5b@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority"}
         };
-
-        mongodb:Client mongoClient = check new (mongoConfig, database);
-        map<json> queryString = {name: product};
         
-        stream<Product, error?> result = check mongoClient->find(collection, (), queryString);
-
-        check result.forEach(function(Product Tempproduct){
-            log:printInfo(Tempproduct.name + " released in " + Tempproduct.price.toString());
+        mongodb:Client mongoClient = check new (mongoConfig, database);
+        stream<Product, error?> result;
+        if(product != "-1"){
+            map<json> queryString = {name: product};
+            result = check mongoClient->find(collection, (), queryString);
+        }else{
+            result = check mongoClient->find(collection, (), ());
+        }
+        //json x = {};
+        check result.forEach(function(Product tempProduct){
+            log:printInfo("{{bar_code: " + tempProduct.bar_code + "," + 
+                          "brand_name: " + tempProduct.brand_name + "," +
+                          "name: " + tempProduct.name + "," +
+                          "price: " + tempProduct.price + "," +
+                          "size: " + tempProduct.size + "}}");
+           
+            //x= tempProduct.toJson();
         });
-
+        
         mongoClient->close();
         
-        return result.toString();
+        return "";
+    
     }
 
 }
