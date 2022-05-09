@@ -1,7 +1,7 @@
 import ballerina/http;
 import ballerinax/mongodb;
 
-const string host = "data.mongodb-api.com";
+const string host = "127.0.0.1";
 const int port = 27017;
 const string username = "SuperMarketPurchasesAdmin";
 const string password = "1z2x3c4v5b";
