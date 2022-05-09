@@ -6,4 +6,3 @@
   export = ["supermarketpurchasesapi"]
   name = "supermarketpurchasesapi"
   org = "supermarketpurchases"
-

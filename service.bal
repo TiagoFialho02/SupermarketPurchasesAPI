@@ -1,6 +1,15 @@
 import ballerina/http;
 import ballerinax/mongodb;
 
+const string host = "data.mongodb-api.com";
+const int port = 27017;
+const string username = "SuperMarketPurchasesAdmin";
+const string password = "1z2x3c4v5b";
+const string database = "SuperMarketPurchases";
+const string collection = "Products";
+const string mongoURL = "mongodb+srv://" + username + ":" + password + "@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority";
+
+
 # A service representing a network-accessible API
 # bound to port `9090`.
  
@@ -23,18 +32,12 @@ type productItem record {
 };
 
 isolated string products = "";
-type LineStream stream<string, Error?>;
-configurable string host = "data.mongodb-api.com";
-configurable int port = 27017;
-configurable string username = "SuperMarketPurchasesAdmin";
-configurable string password = "1z2x3c4v5b";
-configurable string database = "SuperMarketPurchases";
-configurable string collection = "Products";
+
 
 service / on new http:Listener(9090) {
     # search product by name in MongoDb
     # + productName - the input string product name
-    # + return - json name with hello message or error
+    # + return - json product with content or error
     resource function get SupermarketPurchases/getProductsByName(string productName) returns json|error {
                 // Send a response back to the caller.
         mongodb:ConnectionConfig mongoConfig = {
@@ -42,7 +45,7 @@ service / on new http:Listener(9090) {
             port: port,
             username: username,
             password: password,
-            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: "mongodb+srv://SuperMarketPurchasesAdmin:1z2x3c4v5b@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority"}
+            options: {sslEnabled: false, serverSelectionTimeout: 20000,  url: mongoURL}
         };
         
         mongodb:Client mongoClient = check new (mongoConfig, database);
@@ -88,14 +91,17 @@ service / on new http:Listener(9090) {
         }
     }
 
+    # search product by bar code in MongoDb
+    # + productBarCode - the input string product bar code
+    # + return - json product with content or error
     resource function get SupermarketPurchases/getProductsByBarCode(string productBarCode) returns json|error {
-                // Send a response back to the caller.
+        // Send a response back to the caller.
         mongodb:ConnectionConfig mongoConfig = {
             host: host,
             port: port,
             username: username,
             password: password,
-            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: "mongodb+srv://SuperMarketPurchasesAdmin:1z2x3c4v5b@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority"}
+            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
         };
         
         mongodb:Client mongoClient = check new (mongoConfig, database);
@@ -141,6 +147,14 @@ service / on new http:Listener(9090) {
         }
     }
 
+    # post product in MongoDb
+    # + req_bar_code - product bar code
+    # + req_brand_name - product brand name
+    # + req_name - product name
+    # + req_price - product price
+    # + req_size - product size
+    # + req_date - product date
+    # + return - string "inserted"
     resource function post SupermarketPurchases/postProduct(string req_bar_code, string req_brand_name, string req_name, string req_price, string req_size, string req_date) returns string|error {
         // Send a response back to the caller.
         mongodb:ConnectionConfig mongoConfig = {
@@ -148,7 +162,7 @@ service / on new http:Listener(9090) {
             port: port,
             username: username,
             password: password,
-            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: "mongodb+srv://SuperMarketPurchasesAdmin:1z2x3c4v5b@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority"}
+            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
         };
         mongodb:Client mongoClient = check new (mongoConfig, database);
         map<json> product = {bar_code: req_bar_code,
@@ -164,8 +178,8 @@ service / on new http:Listener(9090) {
 }
 
 # search product by name in brocade API
-# + productName - the input string product
-# + return - string name with hello message or error
+# + productName - the input string product name
+# + return - product in string
 function brocadeAPIGetProductsByName(string productName) returns string {
     // Send a response back to the caller.
     json response;
@@ -180,7 +194,7 @@ function brocadeAPIGetProductsByName(string productName) returns string {
 
 # search product by bar code in brocade API
 # + productBarCode - the input string barCode
-# + return - string name with hello message or error
+# + return - product in string
 function brocadeAPIGetProductsByBarCode(string productBarCode) returns string {
     // Send a response back to the caller.
     json response;
