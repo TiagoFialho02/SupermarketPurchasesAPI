@@ -7,7 +7,7 @@ const string username = "SuperMarketPurchasesAdmin";
 const string password = "1z2x3c4v5b";
 const string database = "SuperMarketPurchases";
 const string collection = "Products";
-const string mongoURL = "mongodb+srv://" + username + ":" + password + "@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority";
+const string mongoURL = "mongodb+srv://SuperMarketPurchasesAdmin:1z2x3c4v5b@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority";
 
 
 # A service representing a network-accessible API
@@ -36,10 +36,6 @@ isolated string products = "";
 
 service / on new http:Listener(9090) {
 
-    resource function get ola() returns string {
-        return "Olá";
-    }
-    
     # search product by name in MongoDb
     # + productName - the input string product name
     # + return - json product with content or error
