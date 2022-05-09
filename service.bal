@@ -35,6 +35,11 @@ isolated string products = "";
 
 
 service / on new http:Listener(9090) {
+
+    resource function get ola() returns string {
+        return "Olá";
+    }
+    
     # search product by name in MongoDb
     # + productName - the input string product name
     # + return - json product with content or error
