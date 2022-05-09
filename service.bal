@@ -20,8 +20,8 @@ type productItem record {
     string price;
     string size;
     string date;
-}; 
- 
+};
+
 isolated string products = "";
 type LineStream stream<string, Error?>;
 configurable string host = "data.mongodb-api.com";
