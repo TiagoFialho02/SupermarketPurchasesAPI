@@ -41,7 +41,7 @@ service / on new http:Listener(9090) {
             port: port,
             username: username,
             password: password,
-            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
+            options: {url: mongoURL}
         };
 
         mongodb:Client mongoClient = check new (mongoConfig, database);
