@@ -1,13 +1,13 @@
 import ballerina/http;
 import ballerinax/mongodb;
 
-const string host = "127.0.0.1";
-const int port = 27017;
-const string username = "SuperMarketPurchasesAdmin";
-const string password = "1z2x3c4v5b";
-const string database = "SuperMarketPurchases";
-const string collection = "Products";
-const string mongoURL = "mongodb+srv://SuperMarketPurchasesAdmin:1z2x3c4v5b@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority";
+configurable string host = "data.mongodb-api.com";
+configurable int port = 27017;
+configurable string username = "SuperMarketPurchasesAdmin";
+configurable string password = "1z2x3c4v5b";
+configurable string database = "SuperMarketPurchases";
+configurable string collection = "Products";
+configurable string mongoURL = "mongodb+srv://" + username + ":" + password + "@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority";
 
 
 # A service representing a network-accessible API
@@ -102,7 +102,7 @@ service / on new http:Listener(9090) {
             port: port,
             username: username,
             password: password,
-            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: "mongodb+srv://SuperMarketPurchasesAdmin:1z2x3c4v5b@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority"}
+            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
         };
         
         mongodb:Client mongoClient = check new (mongoConfig, database);
