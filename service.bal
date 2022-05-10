@@ -1,13 +1,13 @@
 import ballerina/http;
 import ballerinax/mongodb;
 
-configurable string host = "data.mongodb-api.com";
-configurable int port = 27017;
-configurable string username = "SuperMarketPurchasesAdmin";
-configurable string password = "1z2x3c4v5b";
-configurable string database = "SuperMarketPurchases";
-configurable string collection = "Products";
-configurable string mongoURL = "mongodb+srv://" + username + ":" + password + "@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority";
+const string host = "data.mongodb-api.com";
+const int port = 27017;
+const string username = "SuperMarketPurchasesAdmin";
+const string password = "1z2x3c4v5b";
+const string database = "SuperMarketPurchases";
+const string collection = "Products";
+const string mongoURL = "mongodb+srv://" + username + ":" + password + "@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority";
 
 
 # A service representing a network-accessible API
