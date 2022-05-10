@@ -7,7 +7,7 @@ const string username = "SuperMarketPurchasesAdmin";
 const string password = "1z2x3c4v5b";
 const string database = "SuperMarketPurchases";
 const string collection = "Products";
-const string mongoURL = "mongodb+srv://" + username + ":" + password + "@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority";
+const string mongoURL = "mongodb://" + username + ":" + password + "@supermarketpurchases-shard-00-00.ivgfu.mongodb.net:27017,supermarketpurchases-shard-00-01.ivgfu.mongodb.net:27017,supermarketpurchases-shard-00-02.ivgfu.mongodb.net:27017/" + database + "?ssl=true&replicaSet=atlas-3o9ayk-shard-0&authSource=admin&retryWrites=true&w=majority";
 
 # A service representing a network-accessible API
 # bound to port `9090`.
