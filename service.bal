@@ -39,9 +39,9 @@ service / on new http:Listener(9090) {
         mongodb:ConnectionConfig mongoConfig = {
             host: host,
             port: port,
-            username: username,
-            password: password,
-            options: {url: mongoURL}
+            username:username,
+            password:password,
+            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
         };
 
         mongodb:Client mongoClient = check new (mongoConfig, database);
@@ -59,11 +59,7 @@ service / on new http:Listener(9090) {
     resource function get SupermarketPurchases/getProductsByName(string productName) returns json|error {
         // Send a response back to the caller.
         mongodb:ConnectionConfig mongoConfig = {
-            host: host,
-            port: port,
-            username: username,
-            password: password,
-            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
+            options: {url: mongoURL}
         };
 
         mongodb:Client mongoClient = check new (mongoConfig, database);
