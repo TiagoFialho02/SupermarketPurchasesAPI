@@ -9,10 +9,9 @@ const string database = "SuperMarketPurchases";
 const string collection = "Products";
 const string mongoURL = "mongodb+srv://" + username + ":" + password + "@supermarketpurchases.ivgfu.mongodb.net/SuperMarketPurchases?retryWrites=true&w=majority";
 
-
 # A service representing a network-accessible API
 # bound to port `9090`.
- 
+
 # + _id - n
 # + bar_code - n
 # + brand_name - n
@@ -20,7 +19,7 @@ const string mongoURL = "mongodb+srv://" + username + ":" + password + "@superma
 # + price - n
 # + size - n
 # + date - n
-# 
+#
 type productItem record {
     string _id;
     string bar_code;
@@ -33,36 +32,54 @@ type productItem record {
 
 isolated string products = "";
 
-
 service / on new http:Listener(9090) {
 
-    # search product by name in MongoDb
-    # + productName - the input string product name
-    # + return - json product with content or error
-    resource function get SupermarketPurchases/getProductsByName(string productName) returns json|error {
-                // Send a response back to the caller.
+    resource function get test() returns json|error {
+        // Send a response back to the caller.
         mongodb:ConnectionConfig mongoConfig = {
             host: host,
             port: port,
             username: username,
             password: password,
-            options: {sslEnabled: false, serverSelectionTimeout: 20000,  url: mongoURL}
+            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
         };
-        
+
         mongodb:Client mongoClient = check new (mongoConfig, database);
         stream<productItem, error?> result;
-        if(productName != "-1"){
+        map<json> queryString = {bar_code: "pêra"};
+        result = check mongoClient->find(collection, (), queryString);
+
+        mongoClient->close();
+        return result.toString();
+    }
+
+    # search product by name in MongoDb
+    # + productName - the input string product name
+    # + return - json product with content or error
+    resource function get SupermarketPurchases/getProductsByName(string productName) returns json|error {
+        // Send a response back to the caller.
+        mongodb:ConnectionConfig mongoConfig = {
+            host: host,
+            port: port,
+            username: username,
+            password: password,
+            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
+        };
+
+        mongodb:Client mongoClient = check new (mongoConfig, database);
+        stream<productItem, error?> result;
+        if (productName != "-1") {
             map<json> queryString = {name: productName};
             result = check mongoClient->find(collection, (), queryString);
-        }else{
+        } else {
             result = check mongoClient->find(collection, (), ());
         }
-        lock{
+        lock {
             products = "{";
         }
-        check result.forEach(isolated function(productItem tempProduct){
-            lock{
-                products += ("{bar_code: " + tempProduct.bar_code + "," + 
+        check result.forEach(isolated function(productItem tempProduct) {
+            lock {
+                products += ("{bar_code: " + tempProduct.bar_code + "," +
                             "brand_name: " + tempProduct.brand_name + "," +
                             "name: " + tempProduct.name + "," +
                             "price: " + tempProduct.price + "," +
@@ -70,26 +87,26 @@ service / on new http:Listener(9090) {
             }
         });
 
-        lock{
+        lock {
             products += "}";
         }
         mongoClient->close();
-
         int code = 0;
         // verifies if theres any product with that name on the database 
-        lock{
-            if(products == "{}"){
-               code = 200;
+        lock {
+            if (products == "{}") {
+                code = 200;
             }
         }
 
-        if(code == 200){
+        if (code == 200) {
             return brocadeAPIGetProductsByName(productName);
-        }else{
-            lock{
+        } else {
+            lock {
                 return products.toJson();
             }
         }
+
     }
 
     # search product by bar code in MongoDb
@@ -104,21 +121,21 @@ service / on new http:Listener(9090) {
             password: password,
             options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
         };
-        
+
         mongodb:Client mongoClient = check new (mongoConfig, database);
         stream<productItem, error?> result;
-        if(productBarCode != "-1"){
+        if (productBarCode != "-1") {
             map<json> queryString = {bar_code: productBarCode};
             result = check mongoClient->find(collection, (), queryString);
-        }else{
+        } else {
             result = check mongoClient->find(collection, (), ());
         }
-        lock{
+        lock {
             products = "{";
         }
-        check result.forEach(isolated function(productItem tempProduct){
-            lock{
-                products += ("{bar_code: " + tempProduct.bar_code + "," + 
+        check result.forEach(isolated function(productItem tempProduct) {
+            lock {
+                products += ("{bar_code: " + tempProduct.bar_code + "," +
                             "brand_name: " + tempProduct.brand_name + "," +
                             "name: " + tempProduct.name + "," +
                             "price: " + tempProduct.price + "," +
@@ -126,23 +143,21 @@ service / on new http:Listener(9090) {
             }
         });
 
-        lock{
+        lock {
             products += "}";
         }
         mongoClient->close();
-
         int code = 0;
         // verifies if theres any product with that name on the database 
-        lock{
-            if(products == "{}"){
-               code = 200;
+        lock {
+            if (products == "{}") {
+                code = 200;
             }
         }
-
-        if(code == 200){
+        if (code == 200) {
             return brocadeAPIGetProductsByBarCode(productBarCode);
-        }else{
-            lock{
+        } else {
+            lock {
                 return products.toJson();
             }
         }
@@ -166,12 +181,14 @@ service / on new http:Listener(9090) {
             options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
         };
         mongodb:Client mongoClient = check new (mongoConfig, database);
-        map<json> product = {bar_code: req_bar_code,
-                            brand_name: req_brand_name,
-                            name: req_name,
-                            price: req_price,
-                            size: req_size,
-                            date: req_date};	
+        map<json> product = {
+            bar_code: req_bar_code,
+            brand_name: req_brand_name,
+            name: req_name,
+            price: req_price,
+            size: req_size,
+            date: req_date
+        };
         check mongoClient->insert(product, collection);
         mongoClient->close();
         return "Inserted";
@@ -186,9 +203,9 @@ function brocadeAPIGetProductsByName(string productName) returns string {
     json response;
     do {
         http:Client brocade_itemByName = check new ("https://www.brocade.io/api");
-	    response = check brocade_itemByName->get("/items?query=" + productName);
-    } on fail var e{
-    	return e.toString();
+        response = check brocade_itemByName->get("/items?query=" + productName);
+    } on fail var e {
+        return e.toString();
     }
     return response.toString();
 }
@@ -200,11 +217,11 @@ function brocadeAPIGetProductsByBarCode(string productBarCode) returns string {
     // Send a response back to the caller.
     json response;
     do {
-	    // Send a response back to the caller.
-	    http:Client brocade_itemByName = check new ("https://www.brocade.io/api");
+        // Send a response back to the caller.
+        http:Client brocade_itemByName = check new ("https://www.brocade.io/api");
         response = check brocade_itemByName->get("/items/" + productBarCode);
     } on fail var e {
-    	return e.toString();
+        return e.toString();
     }
     return response.toString();
 }
