@@ -34,25 +34,6 @@ isolated string products = "";
 
 service / on new http:Listener(9090) {
 
-    resource function get test() returns json|error {
-        // Send a response back to the caller.
-        mongodb:ConnectionConfig mongoConfig = {
-            host: host,
-            port: port,
-            username:username,
-            password:password,
-            options: {sslEnabled: false, serverSelectionTimeout: 20000, url: mongoURL}
-        };
-
-        mongodb:Client mongoClient = check new (mongoConfig, database);
-        stream<productItem, error?> result;
-        map<json> queryString = {bar_code: "pêra"};
-        result = check mongoClient->find(collection, (), queryString);
-
-        mongoClient->close();
-        return result.toString();
-    }
-
     # search product by name in MongoDb
     # + productName - the input string product name
     # + return - json product with content or error
