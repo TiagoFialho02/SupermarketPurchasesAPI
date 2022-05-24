@@ -7,7 +7,10 @@ const string username = "SuperMarketPurchasesAdmin";
 const string password = "1z2x3c4v5b";
 const string database = "SuperMarketPurchases";
 const string collection = "Products";
-const string mongoURL = "mongodb://" + username + ":" + password + "@supermarketpurchases-shard-00-00.ivgfu.mongodb.net:27017,supermarketpurchases-shard-00-01.ivgfu.mongodb.net:27017,supermarketpurchases-shard-00-02.ivgfu.mongodb.net:27017/" + database + "?ssl=true&replicaSet=atlas-3o9ayk-shard-0&authSource=admin&retryWrites=true&w=majority";
+
+const string mongoURL = "mongodb://" + username + ":" + password + "@supermarketpurchases-shard-00-00.ivgfu.mongodb.net:27017,supermarketpurchases-shard-00-01.ivgfu" + 
+                        ".mongodb.net:27017,supermarketpurchases-shard-00-02.ivgfu.mongodb.net:27017/" + database + "?ssl=true&replicaSet=atlas-3o9ayk-shard-0&" + 
+                        "authSource=admin&retryWrites=true&w=majority";
 
 # A service representing a network-accessible API
 # bound to port `9090`.
@@ -49,8 +52,9 @@ service / on new http:Listener(9090) {
 
         mongodb:Client mongoClient = check new (mongoConfig, database);
         stream<productItem, error?> result;
+        map<json> queryString = {name: productName};
+
         if (productName != "-1") {
-            map<json> queryString = {name: productName};
             result = check mongoClient->find(collection, (), queryString);
         } else {
             result = check mongoClient->find(collection, (), ());
